@@ -1,0 +1,49 @@
+.container {
+  position: absolute;
+  bottom: 0;
+  padding: 1.5rem;
+
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7c3aed;
+
+  font-family: "Titillium Web";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1.5rem;
+  line-height: 1.5rem;
+
+  gap: 0.625rem;
+}
+
+.footer{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: -1rem;
+}
+
+.right {
+  margin-right: 0.90rem;
+  font-weight: 700;
+  color: #7c3aed;
+
+}
+
+.left{
+  font-weight: 700;
+  color: #f7f7f8;
+}
+
+@media screen and (max-width: 1000px) {
+  .container {
+    position: relative;
+    margin-top: 1.575rem;
+  }
+  .left{
+    font-weight: 700;
+    color: #7c3aed;
+  }
+}

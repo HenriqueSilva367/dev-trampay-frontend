@@ -1,24 +1,21 @@
 import { useState } from "react";
-import Logo from '../assets/logo.svg';
-import bg from "../assets/bg.svg";
-import EyeOff from '../assets/eye-off.svg';
-import Eye from '../assets/eye.svg';
+import Logo from '../../assets/logo.svg';
+import bg from "../../assets/bg.svg";
+import EyeOff from '../../assets/eye-off.svg';
+import Eye from '../../assets/eye.svg';
 import "./style.css";
-import api from "../services/api";
-import { useNavigate } from "react-router-dom";
-import { getItem, setItem } from "../utils/storage";
+import api from "../../services/api";
+import { Link, useNavigate } from "react-router-dom";
+import { setItem } from "../../utils/storage";
 
-function LoginPage() {
+function SigIn() {
 
   const [showPassword, setShowPassword] = useState<string>('');
   const [isRevealPwd, setIsRevealPwd] = useState<boolean>(true);
   const [email, setEmail] = useState<string>('');
- 
+  const [name, setName] = useState<string>('');
   
   const navigate = useNavigate();
-  
-  console.log(email);
-
 
   async function hendleSubmitted(event: React.FormEvent<HTMLFormElement>){
     event.preventDefault();
@@ -32,11 +29,15 @@ function LoginPage() {
         password: showPassword,
       });
 
-      
-      console.log(response.data.access_token);
       if (response.status !== 200) return window.alert('Usuário ou Senha não conferem');
       const  token = response.data.access_token;
       
+      const result = await api.get(`/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setItem('userNome', result.data.name);
       setItem("token", token);
       navigate('/home')
     } catch (error) {
@@ -53,10 +54,6 @@ function LoginPage() {
         <main>
           <div className="headline">
             <h1>Acesse a plataforma</h1>
-            <p>
-              Faça login ou registre-se para começar a construir seus projetos
-              ainda hoje.
-            </p>
           </div>
           <form onSubmit={hendleSubmitted}>
             <div className="input-wrapper">
@@ -99,7 +96,11 @@ function LoginPage() {
 
             <div className="create-account">
               Ainda não tem uma conta?
-              <a href="#"> Inscreva-se </a>
+              <Link to="./SignUp">
+              <p>
+                <strong>Inscreva-se</strong>
+              </p>
+            </Link>
             </div>
           </form>
         </main>
@@ -111,4 +112,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+export default SigIn;

@@ -5,7 +5,6 @@ import { getItem } from "../utils/storage";
 function PrivateRouter({children}: any){
 
   const token =  getItem("token");
-  console.log(token);
   return token ? children : <Navigate to='/'/>
 }
 

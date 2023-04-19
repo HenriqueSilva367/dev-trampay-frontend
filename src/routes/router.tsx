@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "../pages/LoginPage";
+import Login from "../pages/SignIn/index";
+import SignUp from '../pages/SignUp/index'
 import Home from "../pages/Home/index";
 import PrivateRouter from "./privateRoutes";
 
@@ -16,7 +17,7 @@ function MainRoutes() {
             </PrivateRouter>
           }
         />
-        <Route path="/" element={<Login />} />
+        <Route path="/signUp" element={<SignUp />} />
       </Routes>
     </BrowserRouter>
   );

@@ -1,42 +1,51 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Logo from '../../assets/logo.svg';
 import bg from "../../assets/bg.svg";
 import EyeOff from '../../assets/eye-off.svg';
 import Eye from '../../assets/eye.svg';
 import "./style.css";
 import api from "../../services/api";
-import { useNavigate } from "react-router-dom";
-import { getItem, setItem } from "../../utils/storage";
+import { Link, useNavigate } from "react-router-dom";
+import { setItem } from "../../utils/storage";
 
-function SignUp() {
+function SigIn() {
 
-  const [showPassword, setShowPassword] = useState<string>('');
-  const [confirmationPassword, setConfirmationPassword] = useState<string>('');
-  const [isRevealPwd, setIsRevealPwd] = useState<boolean>(true);
-  const [email, setEmail] = useState<string>('');
-  const [name, setName] = useState<string>('');
+  const [showPassword, setShowPassword] = useState('');
+  const [isRevealPwd, setIsRevealPwd] = useState(true);
+  const [email, setEmail] = useState('');
   
   
   const navigate = useNavigate();
-  
-  async function hendleSubmitted(event: React.FormEvent<HTMLFormElement>){
+
+  const isAuthenticated = localStorage.getItem('token')
+
+  useEffect(() => { if (isAuthenticated) { navigate('/home') } });
+
+  async function hendleSubmitted(event){
     event.preventDefault();
 
     try {
       if(!email) return window.alert('Você deve informar o campo Email');
       if (!showPassword) return window.alert('Você deve informar o campo Senha');
-      if (showPassword != confirmationPassword) return window.alert('As senhas não conferem');
-      if(showPassword.length < 8) return window.alert('A senha dever ser maior que 8 caracteres');
-      await api.post('/user', {
-        name: name, 
+
+      const response = await api.post('/login', { 
         email: email,
         password: showPassword,
       });
 
+      if (response.status !== 200) return window.alert('Usuário ou Senha não conferem');
+      const  token = response.data.access_token;
       
-      navigate('/')
+      const result = await api.get(`/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setItem('userNome', result.data.name);
+      setItem("token", token);
+      navigate('/home')
     } catch (error) {
-      
+      console.log(error);
     }
   }
   
@@ -51,21 +60,10 @@ function SignUp() {
             <h1>Acesse a plataforma</h1>
           </div>
           <form onSubmit={hendleSubmitted}>
-          <div className="input-wrapper">
-              <label htmlFor="name">Nome</label>
-              <input 
-                id="name" 
-                type="name" 
-                name="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Digite seu nome" 
-                required
-              />
-            </div>
             <div className="input-wrapper">
               <label htmlFor="email">E-mail</label>
               <input 
+                className="input-email" 
                 id="email" 
                 type="email" 
                 name="email"
@@ -74,11 +72,16 @@ function SignUp() {
                 placeholder="Digite seu email" 
                 required
               />
-            </div>            
+            </div>
 
             <div className="input-wrapper">
-            <label htmlFor="email">Senha</label>
-              <input
+              <div className="label-wrapper flex">
+                <label htmlFor="senha"> Senha </label>
+                <a href="#"> Esqueceu a senha? </a>
+              </div>
+
+              <input 
+                className="input-password"
                  type={isRevealPwd ? 'password' : 'text'}
                  value={showPassword}
                  onChange={(e) => setShowPassword(e.target.value)} 
@@ -95,25 +98,24 @@ function SignUp() {
                 onClick={() => setIsRevealPwd((prevState) => !prevState)}
               />
             </div>
-            <div className="input-wrapper">
-            <label htmlFor="email">Confirmação senha</label>
-              <input
-                 type={isRevealPwd ? 'password' : 'text'}
-                 value={confirmationPassword}
-                 onChange={(e) => setConfirmationPassword(e.target.value)} 
-                id="senha"
-                placeholder="Digite sua senha"
-              />
+            <button type="submit">Entrar</button>
+
+            <div className="create-account">
+              Ainda não tem uma conta?
+              <Link to="./SignUp">
+              <p>
+                <strong>Inscreva-se</strong>
+              </p>
+            </Link>
             </div>
-            <button type="submit">Cadastrar</button>
           </form>
         </main>
       </div>
       
-        <img src={bg} alt="background" />
+        <img src={bg} alt="" />
       
     </div>
   );
 }
 
-export default SignUp;
+export default SigIn;

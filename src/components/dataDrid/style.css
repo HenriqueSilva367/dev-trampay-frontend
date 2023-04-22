@@ -1,0 +1,105 @@
+html,
+body {
+  background: #fbfaff;
+  min-height: 100vh;
+  font-family: "Inter";
+  line-height: 130%;
+}
+
+#app {
+ 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  
+}
+
+.data-grid{
+min-height: 100vh;
+}
+
+.conteiner-datagrid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.drag-files {
+  background: #f3f0ff;
+  border: 1px dashed #c1b2fa;
+  border-radius: 8px;
+
+  text-align: center;
+  padding: 28px 0 32px;
+
+  position: relative;
+  width: 453px;
+  margin-bottom: 5rem;
+  margin-top: 5rem;
+}
+.drag-files input {
+  all: unset;
+  opacity: 0;
+  inset: 0;
+  position: absolute;
+}
+
+.drag-files i.ph {
+  font-size: 48px;
+  color: #7c3aed;
+}
+
+.drag-files h3 {
+  margin-top: 12px;
+
+  color: #7a5fec;
+  font-size: 16px;
+}
+
+.drag-files p {
+  font-size: 14px;
+  color: #746e82;
+}
+
+.drag-files.dragover {
+  background: #ebe6ff;
+}
+
+table {
+  max-height: 500px;
+  overflow-y: auto;
+}
+th,
+td {
+  min-width: 50px; /* width/largura das células à escolha */
+}
+
+table {
+  text-align: left;
+  padding: 0;
+  border-spacing: 0;
+  border: 1px solid #999;
+  border-right: 0;
+}
+
+table th {
+  text-align: left;
+  border-bottom: 1px solid #999;
+  padding-bottom: 10px;
+}
+
+table td,
+table th {
+  border-bottom: 1px solid #999;
+  border-right: 1px solid #999;
+  border-left: 0;
+  border-top: 0;
+  padding: 3px 10px;
+}
+
+.files {
+  width: 100vh;
+  margin-top: 20px;
+  display: grid;
+  gap: 12px;
+}

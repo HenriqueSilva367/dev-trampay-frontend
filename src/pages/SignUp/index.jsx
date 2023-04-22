@@ -5,43 +5,37 @@ import EyeOff from '../../assets/eye-off.svg';
 import Eye from '../../assets/eye.svg';
 import "./style.css";
 import api from "../../services/api";
-import { Link, useNavigate } from "react-router-dom";
-import { setItem } from "../../utils/storage";
+import { useNavigate } from "react-router-dom";
 
-function SigIn() {
+function SignUp() {
 
-  const [showPassword, setShowPassword] = useState<string>('');
-  const [isRevealPwd, setIsRevealPwd] = useState<boolean>(true);
-  const [email, setEmail] = useState<string>('');
-  const [name, setName] = useState<string>('');
+  const [showPassword, setShowPassword] = useState('');
+  const [confirmationPassword, setConfirmationPassword] = useState('');
+  const [isRevealPwd, setIsRevealPwd] = useState(true);
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  
   
   const navigate = useNavigate();
-
-  async function hendleSubmitted(event: React.FormEvent<HTMLFormElement>){
+  
+  async function hendleSubmitted(event){
     event.preventDefault();
 
     try {
       if(!email) return window.alert('Você deve informar o campo Email');
       if (!showPassword) return window.alert('Você deve informar o campo Senha');
-
-      const response = await api.post('/login', { 
+      if (showPassword != confirmationPassword) return window.alert('As senhas não conferem');
+      if(showPassword.length < 8) return window.alert('A senha dever ser maior que 8 caracteres');
+      await api.post('/user', {
+        name: name, 
         email: email,
         password: showPassword,
       });
 
-      if (response.status !== 200) return window.alert('Usuário ou Senha não conferem');
-      const  token = response.data.access_token;
       
-      const result = await api.get(`/me`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setItem('userNome', result.data.name);
-      setItem("token", token);
-      navigate('/home')
+      navigate('/')
     } catch (error) {
-      
+      console.log(error);
     }
   }
   
@@ -56,6 +50,18 @@ function SigIn() {
             <h1>Acesse a plataforma</h1>
           </div>
           <form onSubmit={hendleSubmitted}>
+          <div className="input-wrapper">
+              <label htmlFor="name">Nome</label>
+              <input 
+                id="name" 
+                type="name" 
+                name="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Digite seu nome" 
+                required
+              />
+            </div>
             <div className="input-wrapper">
               <label htmlFor="email">E-mail</label>
               <input 
@@ -67,14 +73,10 @@ function SigIn() {
                 placeholder="Digite seu email" 
                 required
               />
-            </div>
+            </div>            
 
             <div className="input-wrapper">
-              <div className="label-wrapper flex">
-                <label htmlFor="senha"> Senha </label>
-                <a href="#"> Esqueceu a senha? </a>
-              </div>
-
+            <label htmlFor="email">Senha</label>
               <input
                  type={isRevealPwd ? 'password' : 'text'}
                  value={showPassword}
@@ -92,24 +94,25 @@ function SigIn() {
                 onClick={() => setIsRevealPwd((prevState) => !prevState)}
               />
             </div>
-            <button type="submit">Entrar</button>
-
-            <div className="create-account">
-              Ainda não tem uma conta?
-              <Link to="./SignUp">
-              <p>
-                <strong>Inscreva-se</strong>
-              </p>
-            </Link>
+            <div className="input-wrapper">
+            <label htmlFor="email">Confirmação senha</label>
+              <input
+                 type={isRevealPwd ? 'password' : 'text'}
+                 value={confirmationPassword}
+                 onChange={(e) => setConfirmationPassword(e.target.value)} 
+                id="senha"
+                placeholder="Digite sua senha"
+              />
             </div>
+            <button type="submit">Cadastrar</button>
           </form>
         </main>
       </div>
       
-        <img src={bg} alt="" />
+        <img src={bg} alt="background" />
       
     </div>
   );
 }
 
-export default SigIn;
+export default SignUp;
